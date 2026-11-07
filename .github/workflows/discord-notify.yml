@@ -1,0 +1,117 @@
+name: Discord notifications
+
+on:
+  push:
+    branches: ['**']
+    tags: ['**']
+  create:
+  delete:
+  fork:
+  watch:
+    types: [started]
+  public:
+  pull_request_target:
+    types:
+      - opened
+      - edited
+      - closed
+      - reopened
+      - synchronize
+      - ready_for_review
+      - converted_to_draft
+      - review_requested
+      - review_request_removed
+      - assigned
+      - unassigned
+      - labeled
+      - unlabeled
+      - auto_merge_enabled
+      - auto_merge_disabled
+  pull_request_review:
+    types: [submitted, edited, dismissed]
+  pull_request_review_comment:
+    types: [created, edited, deleted]
+  issues:
+    types:
+      - opened
+      - edited
+      - deleted
+      - closed
+      - reopened
+      - assigned
+      - unassigned
+      - labeled
+      - unlabeled
+      - milestoned
+      - demilestoned
+      - pinned
+      - unpinned
+      - locked
+      - unlocked
+      - transferred
+  issue_comment:
+    types: [created, edited, deleted]
+  discussion:
+    types: [created, edited, deleted, answered, unanswered, closed, reopened, labeled, unlabeled, category_changed, pinned, unpinned, locked, unlocked, transferred]
+  discussion_comment:
+    types: [created, edited, deleted]
+  release:
+    types: [published, unpublished, created, edited, deleted, prereleased, released]
+  label:
+    types: [created, edited, deleted]
+  milestone:
+    types: [created, closed, opened, edited, deleted]
+  deployment:
+  deployment_status:
+  status:
+  gollum:
+  page_build:
+  branch_protection_rule:
+    types: [created, edited, deleted]
+  registry_package:
+    types: [published, updated]
+  merge_group:
+    types: [checks_requested]
+  repository_dispatch:
+  workflow_dispatch:
+    inputs:
+      message:
+        description: Message to send with the test notification
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+
+concurrency:
+  # Keeps notifications in chronological order for a given ref without cancelling any of them.
+  group: discord-notify-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  notify:
+    name: Notify Discord
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      # pull_request_target checks out the base branch: no untrusted PR code is ever executed.
+      - name: Checkout notification script
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: .github/scripts
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Send Discord notification
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          DISCORD_USERNAME: ${{ vars.DISCORD_USERNAME }}
+          DISCORD_AVATAR_URL: ${{ vars.DISCORD_AVATAR_URL }}
+          DISCORD_TEST_MESSAGE: ${{ github.event.inputs.message }}
+          GITHUB_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: node .github/scripts/discord-notify.mjs
