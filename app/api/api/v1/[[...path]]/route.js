@@ -9,8 +9,14 @@ function getApiKey(request) {
     return null;
 }
 
+// api.muapi.ai (nginx) refuses request bodies over 200 MB before authentication.
+const MUAPI_BODY_LIMIT_DETAIL = 'File too large for MuAPI: its upload endpoint refuses files over 200 MB (HTTP 413).';
+
 async function toJsonResponse(response) {
     const text = await response.text();
+    if (response.status === 413) {
+        return NextResponse.json({ detail: MUAPI_BODY_LIMIT_DETAIL }, { status: 413 });
+    }
     try {
         return NextResponse.json(JSON.parse(text), { status: response.status });
     } catch {
