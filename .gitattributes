@@ -1,0 +1,14 @@
+# Generated media are stored with Git LFS (GitHub rejects files over 100 MB).
+output/**/*.mp4 filter=lfs diff=lfs merge=lfs -text
+output/**/*.webm filter=lfs diff=lfs merge=lfs -text
+output/**/*.mov filter=lfs diff=lfs merge=lfs -text
+output/**/*.png filter=lfs diff=lfs merge=lfs -text
+output/**/*.jpg filter=lfs diff=lfs merge=lfs -text
+output/**/*.jpeg filter=lfs diff=lfs merge=lfs -text
+output/**/*.webp filter=lfs diff=lfs merge=lfs -text
+output/**/*.gif filter=lfs diff=lfs merge=lfs -text
+output/**/*.avif filter=lfs diff=lfs merge=lfs -text
+output/**/*.mp3 filter=lfs diff=lfs merge=lfs -text
+output/**/*.wav filter=lfs diff=lfs merge=lfs -text
+output/**/*.ogg filter=lfs diff=lfs merge=lfs -text
+output/**/*.m4a filter=lfs diff=lfs merge=lfs -text

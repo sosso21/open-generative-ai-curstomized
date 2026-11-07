@@ -36,3 +36,6 @@ out/
 .env
 .env.*
 !.env.example
+
+# Downloads in progress of /api/outputs
+output/**/*.part
