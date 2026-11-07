@@ -24,6 +24,8 @@ function cleanHeaders(request) {
     headers.delete('host');
     headers.delete('connection');
     headers.delete('cookie');
+    // Connection-level headers the streaming fetch refuses (curl sends Expect: 100-continue on large uploads).
+    for (const name of ['expect', 'transfer-encoding', 'keep-alive', 'upgrade']) headers.delete(name);
     return headers;
 }
 
