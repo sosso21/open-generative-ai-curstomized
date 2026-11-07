@@ -11,6 +11,7 @@ const inter = Inter({
 export const metadata = {
   title: 'Open Generative AI — Free AI Image & Video Studio',
   description: 'Generate AI images and videos using 200+ models — Flux, Midjourney, Kling, Veo, Seedance and more.',
+  icons: { icon: '/vite.svg' },
 };
 
 export default async function RootLayout({ children }) {
