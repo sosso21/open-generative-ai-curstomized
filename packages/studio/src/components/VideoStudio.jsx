@@ -1584,7 +1584,7 @@ export default function VideoStudio({
   const uploadFiles = useCallback(
     async (files, { label, maxBytes, setUploading, setProgress }) => {
       const selectedFiles = Array.from(files);
-      const tooLarge = selectedFiles.find((file) => file.size > maxBytes);
+      const tooLarge = maxBytes ? selectedFiles.find((file) => file.size > maxBytes) : null;
       if (tooLarge) {
         alert(copy.errors.labelExceedsLimit.replace('{label}', label).replace('{limit}', Math.round(maxBytes / 1024 / 1024)));
         return [];
@@ -1651,7 +1651,7 @@ export default function VideoStudio({
       const options = slot.mediaType === "image"
         ? { label: slot.label, maxBytes: 10 * 1024 * 1024, setUploading: setImageUploading, setProgress: setImageProgress }
         : slot.mediaType === "video"
-          ? { label: slot.label, maxBytes: 50 * 1024 * 1024, setUploading: setVideoUploading, setProgress: setVideoProgress }
+          ? { label: slot.label, setUploading: setVideoUploading, setProgress: setVideoProgress }
           : { label: slot.label, maxBytes: 50 * 1024 * 1024, setUploading: setAudioUploading, setProgress: setAudioProgress };
 
       const uploadKey = `${draftKey}:${slot.id}`;
@@ -1769,7 +1769,7 @@ export default function VideoStudio({
       const options = mediaType === "image"
         ? { label: copy.media.image, maxBytes: 10 * 1024 * 1024, setUploading: setImageUploading, setProgress: setImageProgress }
         : mediaType === "video"
-          ? { label: copy.media.video, maxBytes: 50 * 1024 * 1024, setUploading: setVideoUploading, setProgress: setVideoProgress }
+          ? { label: copy.media.video, setUploading: setVideoUploading, setProgress: setVideoProgress }
           : { label: copy.media.audio, maxBytes: 50 * 1024 * 1024, setUploading: setAudioUploading, setProgress: setAudioProgress };
       const urls = await uploadFiles(Array.from(files).slice(0, remaining), options);
       applyReferenceUrls(mediaType, urls, target, selectionAtStart);

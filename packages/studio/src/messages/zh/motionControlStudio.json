@@ -73,7 +73,6 @@
     "deleteGenerated": "确定要删除此生成项吗？"
   },
   "errors": {
-    "videoTooLarge": "视频大小超过 100MB 限制。",
     "imageTooLarge": "图片大小超过 20MB 限制。",
     "missingVideo": "请先上传或选择参考视频。",
     "missingImages": "请先上传或选择至少一张角色图片。",

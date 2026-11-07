@@ -1,0 +1,12 @@
+# Keep the build context small and free of generated media and repository data.
+.git
+**/.git
+**/node_modules
+.next
+output
+deploy
+release
+dist
+*.log
+.env
+.env.*

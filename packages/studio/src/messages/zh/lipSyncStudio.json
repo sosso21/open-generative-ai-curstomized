@@ -41,7 +41,6 @@
   },
   "errors": {
     "imageTooLarge": "图片超过 10MB 限制。",
-    "videoTooLarge": "视频超过 50MB 限制。",
     "audioTooLarge": "音频文件超过 10MB 限制。",
     "imageUploadFailed": "图片上传失败：{message}",
     "videoUploadFailed": "视频上传失败：{message}",

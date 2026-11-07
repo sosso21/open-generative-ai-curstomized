@@ -41,7 +41,6 @@
   },
   "errors": {
     "imageTooLarge": "Image exceeds 10MB limit.",
-    "videoTooLarge": "Video exceeds 50MB limit.",
     "audioTooLarge": "Audio file exceeds 10MB limit.",
     "imageUploadFailed": "Image upload failed: {message}",
     "videoUploadFailed": "Video upload failed: {message}",

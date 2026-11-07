@@ -57,7 +57,6 @@
   "errors": {
     "dismissNotification": "关闭通知",
     "videoTooLarge": "该文件在此模式下过大。请压缩或裁剪视频后再上传较小的文件。",
-    "videoExceedsLimit": "视频超过 {mb}MB 限制。",
     "uploadFailed": "视频上传失败，请重试。",
     "generationFailed": "AI 剪辑处理失败。"
   },

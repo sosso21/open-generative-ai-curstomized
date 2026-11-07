@@ -52,7 +52,6 @@
     "deleteGenerated": "Are you sure you want to delete this generated item?"
   },
   "errors": {
-    "videoTooLarge": "Video exceeds 50MB limit.",
     "imageTooLarge": "Image exceeds 10MB limit.",
     "missingVideo": "Please upload a source video first.",
     "missingImage": "Please upload a character image first.",

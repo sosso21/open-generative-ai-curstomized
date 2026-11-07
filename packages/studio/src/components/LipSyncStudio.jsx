@@ -678,10 +678,6 @@ export default function LipSyncStudio({
     async (files) => {
       const file = Array.isArray(files) ? files[0] : files;
       if (!file) return;
-      if (file.size > 50 * 1024 * 1024) {
-        toast.error(copy.errors.videoTooLarge);
-        return;
-      }
       setVideoState(UPLOAD_STATE.UPLOADING);
       setVideoProgress(0);
       try {

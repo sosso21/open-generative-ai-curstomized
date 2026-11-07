@@ -57,7 +57,6 @@
   "errors": {
     "dismissNotification": "Dismiss notification",
     "videoTooLarge": "The file is too large for this mode. Compress or trim the video, then upload a smaller file.",
-    "videoExceedsLimit": "Video exceeds {mb}MB limit.",
     "uploadFailed": "Video upload failed. Please try again.",
     "generationFailed": "Failed to process AI clipping."
   },

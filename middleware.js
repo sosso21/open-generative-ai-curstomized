@@ -50,10 +50,11 @@ export function middleware(request) {
     return addSecurityHeaders(response);
 }
 
-// Match all paths for security headers. Exclude Next.js internal paths.
+// Match all paths for security headers. Exclude Next.js internal paths and the file upload proxies:
+// when middleware runs, Next.js buffers a copy of the request body and truncates it past
+// middlewareClientMaxBodySize (10 MB), which corrupts every larger upload.
 export const config = {
     matcher: [
-        '/api/:path*',
-        '/((?!_next/static|_next/image|favicon.ico|__nextjs_original-stack-frame).*)',
+        '/((?!_next/static|_next/image|favicon.ico|__nextjs_original-stack-frame|api/api/v1/upload_file|api/upload-binary|api/v1/upload-binary).*)',
     ],
 };

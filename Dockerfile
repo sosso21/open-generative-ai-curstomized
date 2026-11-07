@@ -23,6 +23,8 @@ COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/server-timeouts.cjs ./server-timeouts.cjs
 
 EXPOSE 3000
-CMD ["npm", "start"]
+# next start without npm in between (no npm update check at each start), with the upload-friendly timeouts.
+CMD ["node", "--require", "./server-timeouts.cjs", "node_modules/next/dist/bin/next", "start"]

@@ -728,10 +728,6 @@ export default function MotionControlStudio({
 
   // ── Video Upload ────────────────────────────────────────────────────────────
   const handleUploadVideo = async (file) => {
-    if (file.size > 100 * 1024 * 1024) {
-      toast.error(copy.errors.videoTooLarge);
-      return;
-    }
     setVideoState(UPLOAD_STATE.UPLOADING);
     setVideoName(file.name);
     setVideoProgress(0);

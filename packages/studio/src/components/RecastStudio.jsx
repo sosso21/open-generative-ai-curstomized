@@ -677,10 +677,6 @@ export default function RecastStudio({
   // ── Upload handlers ─────────────────────────────────────────────────────────
   const handleVideoPick = useCallback(
     async (file) => {
-      if (file.size > 50 * 1024 * 1024) {
-        alert(copy.errors.videoTooLarge);
-        return;
-      }
       setVideoState(UPLOAD_STATE.UPLOADING);
       setVideoProgress(0);
       try {

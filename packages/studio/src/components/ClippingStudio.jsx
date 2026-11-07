@@ -29,8 +29,6 @@ import en from "../messages/en/clippingStudio.json";
 import zh from "../messages/zh/clippingStudio.json";
 import { resolveCopy } from "../i18nUtils";
 
-const MAX_VIDEO_SIZE_MB = 100;
-const MAX_VIDEO_SIZE_BYTES = MAX_VIDEO_SIZE_MB * 1024 * 1024;
 const CLIPPING_TOASTER_ID = "clipping-studio";
 const MAX_VISIBLE_ERROR_TOASTS = 3;
 const ERROR_TOAST_DURATION_MS = 7000;
@@ -168,10 +166,6 @@ const showErrorToast = (message, copy = en) => {
     () => forgetErrorToast(toastId),
     ERROR_TOAST_DURATION_MS + 1000,
   );
-};
-
-const showVideoSizeLimitToast = (copy = en) => {
-  showErrorToast(copy.errors.videoExceedsLimit.replace("{mb}", MAX_VIDEO_SIZE_MB), copy);
 };
 
 const isFileSizeError = (error) => {
@@ -344,11 +338,6 @@ export default function ClippingStudio({
       const videoFiles = droppedFiles.filter(f => f.type.startsWith('video/'));
       if (videoFiles.length > 0) {
         const file = videoFiles[0];
-        if (file.size > MAX_VIDEO_SIZE_BYTES) {
-          showVideoSizeLimitToast(copy);
-          onFilesHandled?.();
-          return;
-        }
         setVideoUploading(true);
         setVideoProgress(0);
         uploadFile(apiKey, file, (pct) => {
@@ -421,11 +410,6 @@ export default function ClippingStudio({
   const processVideoFiles = async (files) => {
     const file = files && files[0];
     if (!file) return;
-    if (file.size > MAX_VIDEO_SIZE_BYTES) {
-      showVideoSizeLimitToast(copy);
-      if (videoFileInputRef.current) videoFileInputRef.current.value = "";
-      return;
-    }
     setVideoUploading(true);
     setVideoProgress(0);
     try {

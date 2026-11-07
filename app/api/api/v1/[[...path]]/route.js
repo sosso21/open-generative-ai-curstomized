@@ -9,6 +9,16 @@ function getApiKey(request) {
     return null;
 }
 
+async function toJsonResponse(response) {
+    const text = await response.text();
+    try {
+        return NextResponse.json(JSON.parse(text), { status: response.status });
+    } catch {
+        // Non-JSON upstream errors (e.g. an HTML 413 page) keep their status and a readable detail.
+        return NextResponse.json({ detail: text.slice(0, 500) || response.statusText }, { status: response.status });
+    }
+}
+
 function cleanHeaders(request) {
     const headers = new Headers(request.headers);
     headers.delete('host');
@@ -35,8 +45,7 @@ export async function GET(request, { params }) {
 
     try {
         const response = await fetch(targetUrl, { headers, method: 'GET' });
-        const data = await response.json();
-        return NextResponse.json(data, { status: response.status });
+        return await toJsonResponse(response);
     } catch (error) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
@@ -55,10 +64,14 @@ export async function POST(request, { params }) {
     if (apiKey) headers.set('x-api-key', apiKey);
 
     try {
-        const body = await request.arrayBuffer();
-        const response = await fetch(targetUrl, { method: 'POST', headers, body });
-        const data = await response.json();
-        return NextResponse.json(data, { status: response.status });
+        // Streamed, never buffered: uploads (POST upload_file) can be several gigabytes.
+        const response = await fetch(targetUrl, {
+            method: 'POST',
+            headers,
+            body: request.body,
+            duplex: 'half',
+        });
+        return await toJsonResponse(response);
     } catch (error) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
