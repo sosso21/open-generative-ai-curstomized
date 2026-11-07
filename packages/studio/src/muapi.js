@@ -18,6 +18,10 @@ const BASE_URL = (typeof window !== 'undefined' && window.location?.protocol?.st
     : 'https://api.muapi.ai';
 const PROXY_WF_BASE = '/api/workflow';
 const FILE_UPLOAD_TIMEOUT_MS = 300_000;
+// Large videos on a slow uplink need more than the base timeout: allow at least this throughput.
+const FILE_UPLOAD_MIN_BYTES_PER_SECOND = 256 * 1024;
+// Server route of the host app that copies every finished result into its output/ folder.
+const OUTPUT_ARCHIVE_URL = '/api/outputs';
 const FILE_UPLOAD_PENDING_PROGRESS = 99;
 
 function notifyAuthRequired(status, detail) {
@@ -52,6 +56,41 @@ async function pollForResult(requestId, key, maxAttempts = 900, interval = 2000)
     });
 }
 
+function collectOutputUrls(result) {
+    const candidates = [
+        ...(Array.isArray(result?.outputs) ? result.outputs : []),
+        ...(Array.isArray(result?.images) ? result.images : []),
+        result?.url,
+        result?.output?.url,
+    ];
+    const urls = candidates
+        .map((item) => (typeof item === 'string' ? item : item?.url))
+        .filter((url) => typeof url === 'string' && url.startsWith('https://'));
+    return [...new Set(urls)];
+}
+
+// Fire-and-forget: archiving a result must never delay or fail the generation itself.
+function archiveGenerationOutputs(endpoint, payload, requestId, result) {
+    if (BASE_URL !== '/api') return;
+    const urls = collectOutputUrls(result);
+    if (urls.length === 0) return;
+    fetch(OUTPUT_ARCHIVE_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            urls,
+            model: endpoint,
+            prompt: typeof payload?.prompt === 'string' ? payload.prompt : null,
+            requestId: requestId || null,
+            input: payload,
+        }),
+    })
+        .then((response) => {
+            if (!response.ok) console.warn(`Output archive failed: ${response.status}`);
+        })
+        .catch((error) => console.warn('Output archive failed:', error?.message || error));
+}
+
 function normalizePredictionResult(submitData, result, outputUrl) {
     const requestId = submitData?.request_id || submitData?.id || result?.request_id || result?.id;
     return {
@@ -78,6 +117,7 @@ async function submitAndPoll(endpoint, payload, key, onRequestId, maxAttempts = 
     if (!requestId) return submitData;
     if (onRequestId) onRequestId(requestId);
     const result = await pollForResult(requestId, key, maxAttempts);
+    archiveGenerationOutputs(endpoint, payload, requestId, result);
     const outputUrl = result.outputs?.[0] || result.url || result.output?.url;
     return normalizePredictionResult(submitData, result, outputUrl);
 }
@@ -375,7 +415,10 @@ export function uploadFile(apiKey, file, onProgress) {
         const xhr = new XMLHttpRequest();
         xhr.open('POST', url);
         xhr.setRequestHeader('x-api-key', apiKey);
-        xhr.timeout = FILE_UPLOAD_TIMEOUT_MS;
+        xhr.timeout = Math.max(
+            FILE_UPLOAD_TIMEOUT_MS,
+            Math.ceil((file.size / FILE_UPLOAD_MIN_BYTES_PER_SECOND) * 1000)
+        );
 
         if (onProgress) {
             xhr.upload.onprogress = (event) => {
