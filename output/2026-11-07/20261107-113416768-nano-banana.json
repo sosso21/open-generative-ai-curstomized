@@ -1,0 +1,15 @@
+{
+  "savedAt": "2026-11-07T10:34:16.768Z",
+  "type": "image",
+  "contentType": "image/avif",
+  "model": "nano-banana",
+  "prompt": "crée moi une image d'un chat",
+  "requestId": "98aed8cd-556e-40d1-9f71-87695bdd7850",
+  "sourceUrl": "https://d3adwkbyhxyrtq.cloudfront.net/webassets/videomodels/google-nano-banana.avif",
+  "file": "20261107-113416768-nano-banana.avif",
+  "input": {
+    "prompt": "crée moi une image d'un chat",
+    "aspect_ratio": "1:1",
+    "image_url": null
+  }
+}

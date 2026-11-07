@@ -1,0 +1,15 @@
+{
+  "savedAt": "2026-11-07T10:33:47.134Z",
+  "type": "image",
+  "contentType": "image/avif",
+  "model": "nano-banana",
+  "prompt": "crée moi une image de chien",
+  "requestId": "8e1663b2-8637-45a7-92bc-71d547fd1dec",
+  "sourceUrl": "https://d3adwkbyhxyrtq.cloudfront.net/webassets/videomodels/google-nano-banana.avif",
+  "file": "20261107-113347134-nano-banana.avif",
+  "input": {
+    "prompt": "crée moi une image de chien",
+    "aspect_ratio": "1:1",
+    "image_url": null
+  }
+}
